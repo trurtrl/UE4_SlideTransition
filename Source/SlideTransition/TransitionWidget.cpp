@@ -62,8 +62,9 @@ void UTransitionWidget::ButtonFadeClicked()
 
 		if (first && second)
 		{
-			m_TransitionManager->InitTransition(first, second, 1.2);
+			m_TransitionManager->InitTransition(first, second, 1.5);
 			m_Plane->GetStaticMeshComponent()->SetMaterial(0, materialInstanceDynamic);
+			m_TransitionManager->StartTransition();
 		}
 	}
 }

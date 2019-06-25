@@ -7,6 +7,7 @@
 #include "Runtime/Engine/Classes/Engine/Texture.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Runtime/Engine/Classes/Materials/MaterialInterface.h"
+#include "Runtime/Engine/Classes/Engine/EngineTypes.h"
 #include "TransitionManager.generated.h"
 
 /**
@@ -25,6 +26,8 @@ public:
 
 	void InitTransition(UTexture* SlideFirst, UTexture* SlideSecond, float Duration);
 
+	void StartTransition();
+
 	//UPROPERTY(EditAnywhere, meta = (DisplayName = "Material Transition Fade"))
 	//TSubclassOf<UMaterialInterface> m_MaterialTransitionFade;
 
@@ -41,4 +44,11 @@ private:
 	UPROPERTY()
 	UMaterialInterface* m_MaterialInterface;
 
+	FTimerHandle		m_TimerHandle;
+
+	float				m_TransitionDuration;
+	float				m_Rate;
+	float				m_TransitionProgress;
+
+	void Transit();
 };

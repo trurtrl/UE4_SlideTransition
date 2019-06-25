@@ -3,6 +3,8 @@
 
 #include "TransitionManager.h"
 #include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
+#include "Runtime/Engine/Classes/Engine/World.h"
+#include "Runtime/Engine/Public/TimerManager.h"
 
 
 UTransitionManager::UTransitionManager()
@@ -10,6 +12,8 @@ UTransitionManager::UTransitionManager()
 	, m_TransitionParam(0.f)
 	, m_MaterialInstanceDynamic(nullptr)
 	, m_MaterialInterface(nullptr)
+	, m_Rate(0.033333f)
+	, m_TransitionProgress(0.f)
 {
 	static ConstructorHelpers::FObjectFinder<UMaterial> materialFade(TEXT("Material'/Game/FadeMaterial.FadeMaterial'"));
 	if (materialFade.Object != NULL)
@@ -34,6 +38,28 @@ void UTransitionManager::InitTransition(UTexture* SlideFirst, UTexture* SlideSec
 	{
 		m_MaterialInstanceDynamic->SetTextureParameterValue("SlideFirst", SlideFirst);
 		m_MaterialInstanceDynamic->SetTextureParameterValue("SlideSecond", SlideSecond);
-		m_MaterialInstanceDynamic->SetScalarParameterValue("AlphaParam", 0.3);
+	}
+
+	m_TransitionDuration = Duration;
+}
+
+void UTransitionManager::StartTransition()
+{
+	m_TransitionProgress = 0.f;
+	FTimerManager& timerManager = GetWorld()->GetTimerManager();
+	timerManager.ClearTimer(m_TimerHandle);
+	timerManager.SetTimer(m_TimerHandle, this, &UTransitionManager::Transit, m_Rate, true, 0.f);
+}
+
+void UTransitionManager::Transit()
+{
+	m_TransitionProgress += m_Rate / m_TransitionDuration;
+	FMath::Clamp(m_TransitionDuration, 0.f, 1.f);
+	m_MaterialInstanceDynamic->SetScalarParameterValue("AlphaParam", m_TransitionProgress);
+
+	if (FMath::IsNearlyEqual(m_TransitionProgress, 1.f))
+	{
+		FTimerManager& timerManager = GetWorld()->GetTimerManager();
+		timerManager.ClearTimer(m_TimerHandle);
 	}
 }
