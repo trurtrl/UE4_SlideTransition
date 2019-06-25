@@ -49,22 +49,71 @@ void UTransitionWidget::NativeConstruct()
 	{
 		m_ButtonFade->OnClicked.AddDynamic(this, &UTransitionWidget::ButtonFadeClicked);
 	}
+	if (m_ButtonAngle && !m_ButtonAngle->OnClicked.IsBound())
+	{
+		m_ButtonAngle->OnClicked.AddDynamic(this, &UTransitionWidget::ButtonAngleClicked);
+	}
+	if (m_ButtonRadial && !m_ButtonRadial->OnClicked.IsBound())
+	{
+		m_ButtonRadial->OnClicked.AddDynamic(this, &UTransitionWidget::ButtonRadialClicked);
+	}
+	if (m_ButtonLinear && !m_ButtonLinear->OnClicked.IsBound())
+	{
+		m_ButtonLinear->OnClicked.AddDynamic(this, &UTransitionWidget::ButtonLinearClicked);
+	}
+
+	m_First = m_SlideFirst.LoadSynchronous();
+	m_Second = m_SlideSecond.LoadSynchronous();
 }
 
 void UTransitionWidget::ButtonFadeClicked()
 {
-	if (m_Plane && m_TransitionManager)
+	if (m_TransitionManager)
 	{
 		UMaterialInstanceDynamic* materialInstanceDynamic = m_TransitionManager->GetMaterialFade();
 
-		UTexture* first = m_SlideFirst.LoadSynchronous();
-		UTexture* second = m_SlideSecond.LoadSynchronous();
+		InitAndStartTransition(materialInstanceDynamic);
+	}
+}
 
-		if (first && second)
-		{
-			m_TransitionManager->InitTransition(first, second, 1.5);
-			m_Plane->GetStaticMeshComponent()->SetMaterial(0, materialInstanceDynamic);
-			m_TransitionManager->StartTransition();
-		}
+void UTransitionWidget::ButtonAngleClicked()
+{
+	if (m_TransitionManager)
+	{
+		UMaterialInstanceDynamic* materialInstanceDynamic = m_TransitionManager->GetMaterialAngle();
+
+		InitAndStartTransition(materialInstanceDynamic);
+	}
+}
+
+void UTransitionWidget::ButtonRadialClicked()
+{
+	if (m_TransitionManager)
+	{
+		UMaterialInstanceDynamic* materialInstanceDynamic = m_TransitionManager->GetMaterialRadial();
+
+		InitAndStartTransition(materialInstanceDynamic);
+	}
+}
+
+void UTransitionWidget::ButtonLinearClicked()
+{
+	if (m_TransitionManager)
+	{
+		UMaterialInstanceDynamic* materialInstanceDynamic = m_TransitionManager->GetMaterialLinear();
+
+		InitAndStartTransition(materialInstanceDynamic);
+	}
+}
+
+void UTransitionWidget::InitAndStartTransition(UMaterialInstanceDynamic* MaterialInstanceDynamic)
+{
+	if (m_Plane && m_First && m_Second)
+	{
+		m_TransitionManager->InitTransition(m_First, m_Second, 1.5);
+		m_Plane->GetStaticMeshComponent()->SetMaterial(0, MaterialInstanceDynamic);
+		m_TransitionManager->StartTransition();
+
+		Swap(m_First, m_Second);
 	}
 }

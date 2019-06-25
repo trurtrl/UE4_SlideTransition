@@ -11,22 +11,76 @@ UTransitionManager::UTransitionManager()
 	: Super()
 	, m_TransitionParam(0.f)
 	, m_MaterialInstanceDynamic(nullptr)
-	, m_MaterialInterface(nullptr)
+	, m_MaterialInterfaceFade(nullptr)
+	, m_MaterialInterfaceAngle(nullptr)
+	, m_MaterialInterfaceRadial(nullptr)
+	, m_MaterialInterfaceLinear(nullptr)
+	, m_TransitionDuration(0.f)
 	, m_Rate(0.033333f)
 	, m_TransitionProgress(0.f)
+	, m_TransitionStart(0.f)
+	, m_TransitionFinish(1.f)
 {
 	static ConstructorHelpers::FObjectFinder<UMaterial> materialFade(TEXT("Material'/Game/FadeMaterial.FadeMaterial'"));
 	if (materialFade.Object != NULL)
 	{
-		m_MaterialInterface = (UMaterial*)materialFade.Object;
+		m_MaterialInterfaceFade = (UMaterial*)materialFade.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UMaterial> materialAngle(TEXT("Material'/Game/AngleCutoff.AngleCutoff'"));
+	if (materialAngle.Object != NULL)
+	{
+		m_MaterialInterfaceAngle = (UMaterial*)materialAngle.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UMaterial> materialRadial(TEXT("Material'/Game/RadialCutoff.RadialCutoff'"));
+	if (materialRadial.Object != NULL)
+	{
+		m_MaterialInterfaceRadial = (UMaterial*)materialRadial.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UMaterial> materialLinear(TEXT("Material'/Game/LinearCutoff.LinearCutoff'"));
+	if (materialLinear.Object != NULL)
+	{
+		m_MaterialInterfaceLinear = (UMaterial*)materialLinear.Object;
 	}
 }
 
 UMaterialInstanceDynamic* UTransitionManager::GetMaterialFade()
 {
-	if (m_MaterialInterface)
+	if (m_MaterialInterfaceFade)
 	{
-		m_MaterialInstanceDynamic = UMaterialInstanceDynamic::Create(m_MaterialInterface, this);
+		m_MaterialInstanceDynamic = UMaterialInstanceDynamic::Create(m_MaterialInterfaceFade, this);
+	}
+
+	return m_MaterialInstanceDynamic;
+}
+
+UMaterialInstanceDynamic* UTransitionManager::GetMaterialAngle()
+{
+	if (m_MaterialInterfaceAngle)
+	{
+		m_MaterialInstanceDynamic = UMaterialInstanceDynamic::Create(m_MaterialInterfaceAngle, this);
+	}
+
+	return m_MaterialInstanceDynamic;
+}
+
+UMaterialInstanceDynamic* UTransitionManager::GetMaterialRadial()
+{
+	if (m_MaterialInterfaceRadial)
+	{
+		m_MaterialInstanceDynamic = UMaterialInstanceDynamic::Create(m_MaterialInterfaceRadial, this);
+	}
+
+	return m_MaterialInstanceDynamic;
+}
+
+UMaterialInstanceDynamic* UTransitionManager::GetMaterialLinear()
+{
+	if (m_MaterialInterfaceLinear)
+	{
+		m_MaterialInstanceDynamic = UMaterialInstanceDynamic::Create(m_MaterialInterfaceLinear, this);
 	}
 
 	return m_MaterialInstanceDynamic;
@@ -45,21 +99,23 @@ void UTransitionManager::InitTransition(UTexture* SlideFirst, UTexture* SlideSec
 
 void UTransitionManager::StartTransition()
 {
-	m_TransitionProgress = 0.f;
+	m_TransitionProgress = m_TransitionStart;
 	FTimerManager& timerManager = GetWorld()->GetTimerManager();
 	timerManager.ClearTimer(m_TimerHandle);
-	timerManager.SetTimer(m_TimerHandle, this, &UTransitionManager::Transit, m_Rate, true, 0.f);
+	timerManager.SetTimer(m_TimerHandle, this, &UTransitionManager::Transit, m_Rate, true, m_TransitionStart);
 }
 
 void UTransitionManager::Transit()
 {
 	m_TransitionProgress += m_Rate / m_TransitionDuration;
-	FMath::Clamp(m_TransitionDuration, 0.f, 1.f);
-	m_MaterialInstanceDynamic->SetScalarParameterValue("AlphaParam", m_TransitionProgress);
 
-	if (FMath::IsNearlyEqual(m_TransitionProgress, 1.f))
+	if (FMath::IsNegativeFloat(m_TransitionFinish - m_TransitionProgress))
 	{
 		FTimerManager& timerManager = GetWorld()->GetTimerManager();
 		timerManager.ClearTimer(m_TimerHandle);
+		m_TransitionProgress = m_TransitionFinish;
 	}
+	m_MaterialInstanceDynamic->SetScalarParameterValue("AlphaParam", m_TransitionProgress);
+
+	UE_LOG(LogTemp, Warning, TEXT("Pregress = %f"), m_TransitionProgress)
 }

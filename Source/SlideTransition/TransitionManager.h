@@ -23,6 +23,10 @@ public:
 	UTransitionManager();
 	
 	UMaterialInstanceDynamic* GetMaterialFade();
+	UMaterialInstanceDynamic* GetMaterialAngle();
+	UMaterialInstanceDynamic* GetMaterialRadial();
+	UMaterialInstanceDynamic* GetMaterialLinear();
+
 
 	void InitTransition(UTexture* SlideFirst, UTexture* SlideSecond, float Duration);
 
@@ -42,13 +46,24 @@ private:
 	UMaterialInstanceDynamic* m_MaterialInstanceDynamic;
 
 	UPROPERTY()
-	UMaterialInterface* m_MaterialInterface;
+	UMaterialInterface* m_MaterialInterfaceFade;
+
+	UPROPERTY()
+	UMaterialInterface* m_MaterialInterfaceAngle;
+
+	UPROPERTY()
+	UMaterialInterface* m_MaterialInterfaceRadial;
+
+	UPROPERTY()
+	UMaterialInterface* m_MaterialInterfaceLinear;
 
 	FTimerHandle		m_TimerHandle;
 
 	float				m_TransitionDuration;
 	float				m_Rate;
 	float				m_TransitionProgress;
+	float				m_TransitionStart;
+	float				m_TransitionFinish;
 
 	void Transit();
 };
