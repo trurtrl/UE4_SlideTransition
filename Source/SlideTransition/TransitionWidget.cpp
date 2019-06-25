@@ -61,6 +61,10 @@ void UTransitionWidget::NativeConstruct()
 	{
 		m_ButtonLinear->OnClicked.AddDynamic(this, &UTransitionWidget::ButtonLinearClicked);
 	}
+	if (m_ButtonWideStripes && !m_ButtonWideStripes->OnClicked.IsBound())
+	{
+		m_ButtonWideStripes->OnClicked.AddDynamic(this, &UTransitionWidget::ButtonWideStripesClicked);
+	}
 
 	m_First = m_SlideFirst.LoadSynchronous();
 	m_Second = m_SlideSecond.LoadSynchronous();
@@ -70,7 +74,7 @@ void UTransitionWidget::ButtonFadeClicked()
 {
 	if (m_TransitionManager)
 	{
-		UMaterialInstanceDynamic* materialInstanceDynamic = m_TransitionManager->GetMaterialFade();
+		UMaterialInstanceDynamic* materialInstanceDynamic = m_TransitionManager->GetMaterial(ETransitionMaterial::Fade);
 
 		InitAndStartTransition(materialInstanceDynamic);
 	}
@@ -80,7 +84,7 @@ void UTransitionWidget::ButtonAngleClicked()
 {
 	if (m_TransitionManager)
 	{
-		UMaterialInstanceDynamic* materialInstanceDynamic = m_TransitionManager->GetMaterialAngle();
+		UMaterialInstanceDynamic* materialInstanceDynamic = m_TransitionManager->GetMaterial(ETransitionMaterial::Angle);
 
 		InitAndStartTransition(materialInstanceDynamic);
 	}
@@ -90,7 +94,7 @@ void UTransitionWidget::ButtonRadialClicked()
 {
 	if (m_TransitionManager)
 	{
-		UMaterialInstanceDynamic* materialInstanceDynamic = m_TransitionManager->GetMaterialRadial();
+		UMaterialInstanceDynamic* materialInstanceDynamic = m_TransitionManager->GetMaterial(ETransitionMaterial::Radial);
 
 		InitAndStartTransition(materialInstanceDynamic);
 	}
@@ -100,7 +104,17 @@ void UTransitionWidget::ButtonLinearClicked()
 {
 	if (m_TransitionManager)
 	{
-		UMaterialInstanceDynamic* materialInstanceDynamic = m_TransitionManager->GetMaterialLinear();
+		UMaterialInstanceDynamic* materialInstanceDynamic = m_TransitionManager->GetMaterial(ETransitionMaterial::Linear);
+
+		InitAndStartTransition(materialInstanceDynamic);
+	}
+}
+
+void UTransitionWidget::ButtonWideStripesClicked()
+{
+	if (m_TransitionManager)
+	{
+		UMaterialInstanceDynamic* materialInstanceDynamic = m_TransitionManager->GetMaterial(ETransitionMaterial::WideStripes);
 
 		InitAndStartTransition(materialInstanceDynamic);
 	}

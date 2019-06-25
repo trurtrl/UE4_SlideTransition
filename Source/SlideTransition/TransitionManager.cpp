@@ -44,43 +44,52 @@ UTransitionManager::UTransitionManager()
 	{
 		m_MaterialInterfaceLinear = (UMaterial*)materialLinear.Object;
 	}
-}
 
-UMaterialInstanceDynamic* UTransitionManager::GetMaterialFade()
-{
-	if (m_MaterialInterfaceFade)
+	static ConstructorHelpers::FObjectFinder<UMaterial> materialWideStripes(TEXT("Material'/Game/WideStripesMaterial.WideStripesMaterial'"));
+	if (materialWideStripes.Object != NULL)
 	{
-		m_MaterialInstanceDynamic = UMaterialInstanceDynamic::Create(m_MaterialInterfaceFade, this);
+		m_MaterialInterfaceWideStripes = (UMaterial*)materialWideStripes.Object;
 	}
-
-	return m_MaterialInstanceDynamic;
 }
 
-UMaterialInstanceDynamic* UTransitionManager::GetMaterialAngle()
+UMaterialInstanceDynamic* UTransitionManager::GetMaterial(ETransitionMaterial Type)
 {
-	if (m_MaterialInterfaceAngle)
+	switch (Type)
 	{
-		m_MaterialInstanceDynamic = UMaterialInstanceDynamic::Create(m_MaterialInterfaceAngle, this);
-	}
-
-	return m_MaterialInstanceDynamic;
-}
-
-UMaterialInstanceDynamic* UTransitionManager::GetMaterialRadial()
-{
-	if (m_MaterialInterfaceRadial)
-	{
-		m_MaterialInstanceDynamic = UMaterialInstanceDynamic::Create(m_MaterialInterfaceRadial, this);
-	}
-
-	return m_MaterialInstanceDynamic;
-}
-
-UMaterialInstanceDynamic* UTransitionManager::GetMaterialLinear()
-{
-	if (m_MaterialInterfaceLinear)
-	{
-		m_MaterialInstanceDynamic = UMaterialInstanceDynamic::Create(m_MaterialInterfaceLinear, this);
+	case ETransitionMaterial::None:
+		break;
+	case ETransitionMaterial::Fade:
+		if (m_MaterialInterfaceFade)
+		{
+			m_MaterialInstanceDynamic = UMaterialInstanceDynamic::Create(m_MaterialInterfaceFade, this);
+		}
+		break;
+	case ETransitionMaterial::Angle:
+		if (m_MaterialInterfaceAngle)
+		{
+			m_MaterialInstanceDynamic = UMaterialInstanceDynamic::Create(m_MaterialInterfaceAngle, this);
+		}
+		break;
+	case ETransitionMaterial::Radial:
+		if (m_MaterialInterfaceRadial)
+		{
+			m_MaterialInstanceDynamic = UMaterialInstanceDynamic::Create(m_MaterialInterfaceRadial, this);
+		}
+		break;
+	case ETransitionMaterial::Linear:
+		if (m_MaterialInterfaceLinear)
+		{
+			m_MaterialInstanceDynamic = UMaterialInstanceDynamic::Create(m_MaterialInterfaceLinear, this);
+		}
+		break;
+	case ETransitionMaterial::WideStripes:
+		if (m_MaterialInterfaceWideStripes)
+		{
+			m_MaterialInstanceDynamic = UMaterialInstanceDynamic::Create(m_MaterialInterfaceWideStripes, this);
+		}
+		break;
+	default:
+		break;
 	}
 
 	return m_MaterialInstanceDynamic;

@@ -10,6 +10,16 @@
 #include "Runtime/Engine/Classes/Engine/EngineTypes.h"
 #include "TransitionManager.generated.h"
 
+enum class ETransitionMaterial : uint8
+{
+	None,
+	Fade,
+	Angle,
+	Radial,
+	Linear,
+	WideStripes
+};
+
 /**
  * 
  */
@@ -22,10 +32,7 @@ public:
 
 	UTransitionManager();
 	
-	UMaterialInstanceDynamic* GetMaterialFade();
-	UMaterialInstanceDynamic* GetMaterialAngle();
-	UMaterialInstanceDynamic* GetMaterialRadial();
-	UMaterialInstanceDynamic* GetMaterialLinear();
+	UMaterialInstanceDynamic* GetMaterial(ETransitionMaterial Type);
 
 
 	void InitTransition(UTexture* SlideFirst, UTexture* SlideSecond, float Duration);
@@ -56,6 +63,9 @@ private:
 
 	UPROPERTY()
 	UMaterialInterface* m_MaterialInterfaceLinear;
+
+	UPROPERTY()
+	UMaterialInterface* m_MaterialInterfaceWideStripes;
 
 	FTimerHandle		m_TimerHandle;
 

@@ -39,6 +39,9 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UButton* m_ButtonLinear;
 
+	UPROPERTY(meta = (BindWidget))
+	UButton* m_ButtonWideStripes;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item) 
 	TAssetPtr<UTexture> m_SlideFirst;
 
@@ -64,6 +67,9 @@ private:
 
 	UFUNCTION()
 	void ButtonLinearClicked();
+
+	UFUNCTION()
+	void ButtonWideStripesClicked();
 
 	UPROPERTY()
 	UTransitionManager* m_TransitionManager;
