@@ -65,6 +65,14 @@ void UTransitionWidget::NativeConstruct()
 	{
 		m_ButtonWideStripes->OnClicked.AddDynamic(this, &UTransitionWidget::ButtonWideStripesClicked);
 	}
+	if (m_ButtonHorizStripes && !m_ButtonHorizStripes->OnClicked.IsBound())
+	{
+		m_ButtonHorizStripes->OnClicked.AddDynamic(this, &UTransitionWidget::ButtonHorizStripesClicked);
+	}
+	if (m_ButtonInclineStripes && !m_ButtonInclineStripes->OnClicked.IsBound())
+	{
+		m_ButtonInclineStripes->OnClicked.AddDynamic(this, &UTransitionWidget::ButtonInclineStripesClicked);
+	}
 
 	m_First = m_SlideFirst.LoadSynchronous();
 	m_Second = m_SlideSecond.LoadSynchronous();
@@ -115,6 +123,26 @@ void UTransitionWidget::ButtonWideStripesClicked()
 	if (m_TransitionManager)
 	{
 		UMaterialInstanceDynamic* materialInstanceDynamic = m_TransitionManager->GetMaterial(ETransitionMaterial::WideStripes);
+
+		InitAndStartTransition(materialInstanceDynamic);
+	}
+}
+
+void UTransitionWidget::ButtonHorizStripesClicked()
+{
+	if (m_TransitionManager)
+	{
+		UMaterialInstanceDynamic* materialInstanceDynamic = m_TransitionManager->GetMaterial(ETransitionMaterial::HorizStripes);
+
+		InitAndStartTransition(materialInstanceDynamic);
+	}
+}
+
+void UTransitionWidget::ButtonInclineStripesClicked()
+{
+	if (m_TransitionManager)
+	{
+		UMaterialInstanceDynamic* materialInstanceDynamic = m_TransitionManager->GetMaterial(ETransitionMaterial::InclineStrpies);
 
 		InitAndStartTransition(materialInstanceDynamic);
 	}

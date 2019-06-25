@@ -50,6 +50,18 @@ UTransitionManager::UTransitionManager()
 	{
 		m_MaterialInterfaceWideStripes = (UMaterial*)materialWideStripes.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UMaterial> materialHorizStripes(TEXT("Material'/Game/HorizStripesMaterial.HorizStripesMaterial'"));
+	if (materialHorizStripes.Object != NULL)
+	{
+		m_MaterialInterfaceHorizStripes = (UMaterial*)materialHorizStripes.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UMaterial> materialInclineStripes(TEXT("Material'/Game/InclineStripesMaterial.InclineStripesMaterial'"));
+	if (materialInclineStripes.Object != NULL)
+	{
+		m_MaterialInterfaceInclineStripes = (UMaterial*)materialInclineStripes.Object;
+	}
 }
 
 UMaterialInstanceDynamic* UTransitionManager::GetMaterial(ETransitionMaterial Type)
@@ -88,6 +100,18 @@ UMaterialInstanceDynamic* UTransitionManager::GetMaterial(ETransitionMaterial Ty
 			m_MaterialInstanceDynamic = UMaterialInstanceDynamic::Create(m_MaterialInterfaceWideStripes, this);
 		}
 		break;
+	case ETransitionMaterial::HorizStripes:
+		if (m_MaterialInterfaceHorizStripes)
+		{
+			m_MaterialInstanceDynamic = UMaterialInstanceDynamic::Create(m_MaterialInterfaceHorizStripes, this);
+		}
+		break;
+	case ETransitionMaterial::InclineStrpies:
+		if (m_MaterialInterfaceInclineStripes)
+		{
+			m_MaterialInstanceDynamic = UMaterialInstanceDynamic::Create(m_MaterialInterfaceInclineStripes, this);
+		}
+		break;
 	default:
 		break;
 	}
@@ -124,7 +148,11 @@ void UTransitionManager::Transit()
 		timerManager.ClearTimer(m_TimerHandle);
 		m_TransitionProgress = m_TransitionFinish;
 	}
-	m_MaterialInstanceDynamic->SetScalarParameterValue("AlphaParam", m_TransitionProgress);
 
-	UE_LOG(LogTemp, Warning, TEXT("Pregress = %f"), m_TransitionProgress)
+	if (m_MaterialInstanceDynamic)
+	{
+		m_MaterialInstanceDynamic->SetScalarParameterValue("AlphaParam", m_TransitionProgress);
+	}
+
+//	UE_LOG(LogTemp, Warning, TEXT("Pregress = %f"), m_TransitionProgress)
 }

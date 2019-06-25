@@ -17,7 +17,9 @@ enum class ETransitionMaterial : uint8
 	Angle,
 	Radial,
 	Linear,
-	WideStripes
+	WideStripes,
+	HorizStripes,
+	InclineStrpies
 };
 
 /**
@@ -66,6 +68,12 @@ private:
 
 	UPROPERTY()
 	UMaterialInterface* m_MaterialInterfaceWideStripes;
+
+	UPROPERTY()
+	UMaterialInterface* m_MaterialInterfaceHorizStripes;
+
+	UPROPERTY()
+	UMaterialInterface* m_MaterialInterfaceInclineStripes;
 
 	FTimerHandle		m_TimerHandle;
 
